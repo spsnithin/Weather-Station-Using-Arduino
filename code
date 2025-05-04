@@ -1,0 +1,72 @@
+# Weather-Station-Using-Arduino
+#include <Wire.h>
+#include <Adafruit_BMP085.h>
+#include <DHT.h>
+#include <LiquidCrystal_I2C.h>
+
+#define DHTPIN 2         // DHT11 data pin connected to D2
+#define DHTTYPE DHT11    // Define the DHT sensor type
+
+DHT dht(DHTPIN, DHTTYPE);
+Adafruit_BMP085 bmp;
+LiquidCrystal_I2C lcd(0x27, 16, 2); // ✅ LCD size defined: 16 columns, 2 rows
+
+void setup() {
+    Serial.begin(9600);
+    
+    dht.begin();
+    Wire.begin();  // Initialize I2C communication
+    
+    if (!bmp.begin()) {
+        Serial.println("BMP180 Sensor not detected!");
+        while (1);
+    }
+    
+    lcd.begin();  // ✅ Initializes LCD with the given size
+    lcd.backlight();
+    lcd.setCursor(0, 0);
+    lcd.print("Weather Station");
+    delay(2000);
+    lcd.clear();
+}
+
+void loop() {
+    float temperatureDHT = dht.readTemperature();  // Read temp from DHT11
+    float humidity = dht.readHumidity();          // Read humidity from DHT11
+    float temperatureBMP = bmp.readTemperature(); // Read temp from BMP180
+    float pressure = bmp.readPressure() / 100.0;  // Convert pressure to hPa
+
+    // Print to Serial Monitor
+    Serial.print("DHT11 Temperature: ");
+    Serial.print(temperatureDHT);
+    Serial.println(" °C");
+
+    Serial.print("Humidity: ");
+    Serial.print(humidity);
+    Serial.println(" %");
+
+    Serial.print("BMP180 Temperature: ");
+    Serial.print(temperatureBMP);
+    Serial.println(" °C");
+
+    Serial.print("Pressure: ");
+    Serial.print(pressure);
+    Serial.println(" hPa");
+
+    Serial.println("----------------------");
+
+    // Display on LCD
+    lcd.setCursor(0, 0);
+    lcd.print("Temp:");
+    lcd.print(temperatureDHT);
+    lcd.print("C");
+
+    lcd.setCursor(0, 1);
+    lcd.print("Hum:");
+    lcd.print(humidity);
+    lcd.print("% P:");
+    lcd.print(pressure);
+    
+    delay(3000); // Wait 3 seconds before the next reading
+    lcd.clear();
+}
