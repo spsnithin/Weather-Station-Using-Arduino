@@ -1,4 +1,4 @@
-🌦️ Weather Station using BMP180 and DHT11
+🌦️ Weather Station using BMP180 and DHT11 
 📌 Overview
 This project is a basic weather monitoring system built using an Arduino UNO, BMP180 barometric pressure sensor, DHT11 temperature and humidity sensor, and a 16x2 I2C LCD display. It continuously displays:
 
